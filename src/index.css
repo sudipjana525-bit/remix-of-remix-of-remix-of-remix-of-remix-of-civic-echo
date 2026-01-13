@@ -2,95 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 222 47% 6%;
+    --foreground: 210 20% 95%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 222 47% 8%;
+    --card-foreground: 210 20% 95%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 222 47% 10%;
+    --popover-foreground: 210 20% 95%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 45 93% 58%;
+    --primary-foreground: 222 47% 6%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 20% 90%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 217 33% 14%;
+    --muted-foreground: 215 20% 55%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 217 33% 20%;
+    --accent-foreground: 210 20% 95%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 217 33% 18%;
+    --input: 217 33% 18%;
+    --ring: 45 93% 58%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 98%;
+    /* Custom semantic tokens */
+    --severity-low: 142 76% 36%;
+    --severity-medium: 45 93% 47%;
+    --severity-high: 25 95% 53%;
+    --severity-critical: 0 72% 51%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    --credible: 142 76% 36%;
+    --suspicious: 25 95% 53%;
 
-    --sidebar-primary: 240 5.9% 10%;
+    --category-fraud: 280 65% 60%;
+    --category-violence: 0 72% 51%;
+    --category-corruption: 45 93% 47%;
+    --category-governance: 217 91% 60%;
+    --category-safety: 25 95% 53%;
+    --category-healthcare: 142 76% 36%;
+    --category-infrastructure: 199 89% 48%;
+    --category-other: 215 20% 55%;
 
-    --sidebar-primary-foreground: 0 0% 98%;
+    --anonymous-accent: 280 65% 60%;
+    --shield-glow: 45 93% 58%;
 
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 222 47% 6%;
+    --sidebar-foreground: 210 20% 90%;
+    --sidebar-primary: 45 93% 58%;
+    --sidebar-primary-foreground: 222 47% 6%;
+    --sidebar-accent: 217 33% 17%;
+    --sidebar-accent-foreground: 210 20% 95%;
+    --sidebar-border: 217 33% 18%;
+    --sidebar-ring: 45 93% 58%;
   }
 }
 
@@ -100,6 +74,164 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-xl border border-border/50 rounded-lg;
+  }
+
+  .severity-badge-low {
+    @apply bg-severity-low/20 text-severity-low border-severity-low/30;
+  }
+
+  .severity-badge-medium {
+    @apply bg-severity-medium/20 text-severity-medium border-severity-medium/30;
+  }
+
+  .severity-badge-high {
+    @apply bg-severity-high/20 text-severity-high border-severity-high/30;
+  }
+
+  .severity-badge-critical {
+    @apply bg-severity-critical/20 text-severity-critical border-severity-critical/30;
+  }
+
+  .credibility-positive {
+    @apply text-credible;
+  }
+
+  .credibility-negative {
+    @apply text-suspicious;
+  }
+
+  .anonymous-id {
+    @apply font-mono text-sm text-anonymous-accent;
+  }
+
+  .shield-icon {
+    @apply text-shield-glow drop-shadow-[0_0_8px_hsl(var(--shield-glow)/0.5)];
+  }
+
+  .category-chip {
+    @apply px-2.5 py-1 rounded-full text-xs font-medium border;
+  }
+}
+
+@layer utilities {
+  .bg-severity-low {
+    background-color: hsl(var(--severity-low));
+  }
+  .bg-severity-medium {
+    background-color: hsl(var(--severity-medium));
+  }
+  .bg-severity-high {
+    background-color: hsl(var(--severity-high));
+  }
+  .bg-severity-critical {
+    background-color: hsl(var(--severity-critical));
+  }
+  .text-severity-low {
+    color: hsl(var(--severity-low));
+  }
+  .text-severity-medium {
+    color: hsl(var(--severity-medium));
+  }
+  .text-severity-high {
+    color: hsl(var(--severity-high));
+  }
+  .text-severity-critical {
+    color: hsl(var(--severity-critical));
+  }
+  .text-credible {
+    color: hsl(var(--credible));
+  }
+  .text-suspicious {
+    color: hsl(var(--suspicious));
+  }
+  .text-anonymous-accent {
+    color: hsl(var(--anonymous-accent));
+  }
+  .text-shield-glow {
+    color: hsl(var(--shield-glow));
+  }
+  .bg-category-fraud {
+    background-color: hsl(var(--category-fraud) / 0.2);
+  }
+  .border-category-fraud {
+    border-color: hsl(var(--category-fraud) / 0.4);
+  }
+  .text-category-fraud {
+    color: hsl(var(--category-fraud));
+  }
+  .bg-category-violence {
+    background-color: hsl(var(--category-violence) / 0.2);
+  }
+  .border-category-violence {
+    border-color: hsl(var(--category-violence) / 0.4);
+  }
+  .text-category-violence {
+    color: hsl(var(--category-violence));
+  }
+  .bg-category-corruption {
+    background-color: hsl(var(--category-corruption) / 0.2);
+  }
+  .border-category-corruption {
+    border-color: hsl(var(--category-corruption) / 0.4);
+  }
+  .text-category-corruption {
+    color: hsl(var(--category-corruption));
+  }
+  .bg-category-governance {
+    background-color: hsl(var(--category-governance) / 0.2);
+  }
+  .border-category-governance {
+    border-color: hsl(var(--category-governance) / 0.4);
+  }
+  .text-category-governance {
+    color: hsl(var(--category-governance));
+  }
+  .bg-category-safety {
+    background-color: hsl(var(--category-safety) / 0.2);
+  }
+  .border-category-safety {
+    border-color: hsl(var(--category-safety) / 0.4);
+  }
+  .text-category-safety {
+    color: hsl(var(--category-safety));
+  }
+  .bg-category-healthcare {
+    background-color: hsl(var(--category-healthcare) / 0.2);
+  }
+  .border-category-healthcare {
+    border-color: hsl(var(--category-healthcare) / 0.4);
+  }
+  .text-category-healthcare {
+    color: hsl(var(--category-healthcare));
+  }
+  .bg-category-infrastructure {
+    background-color: hsl(var(--category-infrastructure) / 0.2);
+  }
+  .border-category-infrastructure {
+    border-color: hsl(var(--category-infrastructure) / 0.4);
+  }
+  .text-category-infrastructure {
+    color: hsl(var(--category-infrastructure));
+  }
+  .bg-category-other {
+    background-color: hsl(var(--category-other) / 0.2);
+  }
+  .border-category-other {
+    border-color: hsl(var(--category-other) / 0.4);
+  }
+  .text-category-other {
+    color: hsl(var(--category-other));
   }
 }
