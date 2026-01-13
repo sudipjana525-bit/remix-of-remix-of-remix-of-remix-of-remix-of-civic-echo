@@ -1,13 +1,12 @@
 import { useState, useMemo } from 'react';
 import { Header } from '@/components/Header';
 import { HeroSection } from '@/components/HeroSection';
-import { FilterSidebar } from '@/components/FilterSidebar';
+import { FilterButton } from '@/components/FilterButton';
 import { EnhancedPostCard } from '@/components/EnhancedPostCard';
 import { GuidedReportDialog } from '@/components/GuidedReportDialog';
 import { Footer } from '@/components/Footer';
 import { LegalDisclaimer } from '@/components/LegalDisclaimer';
 import { TopicFollowing } from '@/components/TopicFollowing';
-import { AnonymityHealthIndicator } from '@/components/AnonymityHealthIndicator';
 import { generateMockPosts } from '@/lib/anonymity';
 import type { Post, Category, Severity } from '@/lib/anonymity';
 import type { FollowedTopic } from '@/lib/types';
@@ -64,66 +63,56 @@ export default function Index() {
       <HeroSection />
 
       <main className="flex-1 container py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar */}
-          <div className="space-y-4">
-            <FilterSidebar
+        {/* Header with actions */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button
+              variant={sortBy === 'recent' ? 'secondary' : 'ghost'}
+              size="sm"
+              onClick={() => setSortBy('recent')}
+              className="gap-2"
+            >
+              <Clock className="h-4 w-4" />
+              Recent
+            </Button>
+            <Button
+              variant={sortBy === 'trending' ? 'secondary' : 'ghost'}
+              size="sm"
+              onClick={() => setSortBy('trending')}
+              className="gap-2"
+            >
+              <TrendingUp className="h-4 w-4" />
+              Trending
+            </Button>
+            <FilterButton
               selectedCategory={selectedCategory}
               selectedSeverity={selectedSeverity}
               onCategoryChange={setSelectedCategory}
               onSeverityChange={setSelectedSeverity}
             />
-            <AnonymityHealthIndicator variant="full" />
+            <TopicFollowing
+              followedTopics={followedTopics}
+              onFollow={handleFollow}
+              onUnfollow={handleUnfollow}
+            />
           </div>
 
-          {/* Main content */}
-          <div className="flex-1">
-            {/* Header with actions */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-              <div className="flex items-center gap-2">
-                <Button
-                  variant={sortBy === 'recent' ? 'secondary' : 'ghost'}
-                  size="sm"
-                  onClick={() => setSortBy('recent')}
-                  className="gap-2"
-                >
-                  <Clock className="h-4 w-4" />
-                  Recent
-                </Button>
-                <Button
-                  variant={sortBy === 'trending' ? 'secondary' : 'ghost'}
-                  size="sm"
-                  onClick={() => setSortBy('trending')}
-                  className="gap-2"
-                >
-                  <TrendingUp className="h-4 w-4" />
-                  Trending
-                </Button>
-                <TopicFollowing
-                  followedTopics={followedTopics}
-                  onFollow={handleFollow}
-                  onUnfollow={handleUnfollow}
-                />
-              </div>
+          <GuidedReportDialog onPostCreated={handlePostCreated} />
+        </div>
 
-              <GuidedReportDialog onPostCreated={handlePostCreated} />
+        {/* Posts */}
+        <div className="max-w-2xl mx-auto space-y-4">
+          {filteredPosts.length > 0 ? (
+            filteredPosts.map((post) => (
+              <EnhancedPostCard key={post.id} post={post} />
+            ))
+          ) : (
+            <div className="text-center py-12 glass-card">
+              <p className="text-muted-foreground">
+                No reports match your filters. Try adjusting your criteria.
+              </p>
             </div>
-
-            {/* Posts */}
-            <div className="space-y-4">
-              {filteredPosts.length > 0 ? (
-                filteredPosts.map((post) => (
-                  <EnhancedPostCard key={post.id} post={post} />
-                ))
-              ) : (
-                <div className="text-center py-12 glass-card">
-                  <p className="text-muted-foreground">
-                    No reports match your filters. Try adjusting your criteria.
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
+          )}
         </div>
       </main>
 
