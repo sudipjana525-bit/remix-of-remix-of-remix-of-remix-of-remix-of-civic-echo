@@ -2,11 +2,15 @@ import { useState, useMemo } from 'react';
 import { Header } from '@/components/Header';
 import { HeroSection } from '@/components/HeroSection';
 import { FilterSidebar } from '@/components/FilterSidebar';
-import { PostCard } from '@/components/PostCard';
-import { CreatePostDialog } from '@/components/CreatePostDialog';
+import { EnhancedPostCard } from '@/components/EnhancedPostCard';
+import { GuidedReportDialog } from '@/components/GuidedReportDialog';
 import { Footer } from '@/components/Footer';
+import { LegalDisclaimer } from '@/components/LegalDisclaimer';
+import { TopicFollowing } from '@/components/TopicFollowing';
+import { AnonymityHealthIndicator } from '@/components/AnonymityHealthIndicator';
 import { generateMockPosts } from '@/lib/anonymity';
 import type { Post, Category, Severity } from '@/lib/anonymity';
+import type { FollowedTopic } from '@/lib/types';
 import { TrendingUp, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -17,21 +21,19 @@ export default function Index() {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedSeverity, setSelectedSeverity] = useState<Severity | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('recent');
+  const [followedTopics, setFollowedTopics] = useState<FollowedTopic[]>([]);
 
   const filteredPosts = useMemo(() => {
     let result = [...posts];
 
-    // Filter by category
     if (selectedCategory) {
       result = result.filter(post => post.category === selectedCategory);
     }
 
-    // Filter by severity
     if (selectedSeverity) {
       result = result.filter(post => post.severity === selectedSeverity);
     }
 
-    // Sort
     if (sortBy === 'recent') {
       result.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     } else {
@@ -47,20 +49,32 @@ export default function Index() {
     setPosts(prev => [newPost, ...prev]);
   };
 
+  const handleFollow = (topic: FollowedTopic) => {
+    setFollowedTopics(prev => [...prev, topic]);
+  };
+
+  const handleUnfollow = (topic: FollowedTopic) => {
+    setFollowedTopics(prev => prev.filter(t => !(t.type === topic.type && t.value === topic.value)));
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
+      <LegalDisclaimer variant="banner" />
       <HeroSection />
 
       <main className="flex-1 container py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
-          <FilterSidebar
-            selectedCategory={selectedCategory}
-            selectedSeverity={selectedSeverity}
-            onCategoryChange={setSelectedCategory}
-            onSeverityChange={setSelectedSeverity}
-          />
+          <div className="space-y-4">
+            <FilterSidebar
+              selectedCategory={selectedCategory}
+              selectedSeverity={selectedSeverity}
+              onCategoryChange={setSelectedCategory}
+              onSeverityChange={setSelectedSeverity}
+            />
+            <AnonymityHealthIndicator variant="full" />
+          </div>
 
           {/* Main content */}
           <div className="flex-1">
@@ -85,16 +99,21 @@ export default function Index() {
                   <TrendingUp className="h-4 w-4" />
                   Trending
                 </Button>
+                <TopicFollowing
+                  followedTopics={followedTopics}
+                  onFollow={handleFollow}
+                  onUnfollow={handleUnfollow}
+                />
               </div>
 
-              <CreatePostDialog onPostCreated={handlePostCreated} />
+              <GuidedReportDialog onPostCreated={handlePostCreated} />
             </div>
 
             {/* Posts */}
             <div className="space-y-4">
               {filteredPosts.length > 0 ? (
                 filteredPosts.map((post) => (
-                  <PostCard key={post.id} post={post} />
+                  <EnhancedPostCard key={post.id} post={post} />
                 ))
               ) : (
                 <div className="text-center py-12 glass-card">
