@@ -1,8 +1,9 @@
-import { Shield, Eye, Menu, Map, Inbox } from 'lucide-react';
+import { Shield, Eye, Menu, Map, Inbox, User, LogIn } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { SmartAlerts } from './SmartAlerts';
+import { useAuth } from '@/hooks/useAuth';
 
 const navItems = [
   { href: '/', label: 'Feed' },
@@ -12,6 +13,7 @@ const navItems = [
 
 export function Header() {
   const location = useLocation();
+  const { user, loading } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -51,10 +53,23 @@ export function Header() {
         <div className="flex items-center gap-2">
           <SmartAlerts />
           
-          <Button variant="ghost" size="sm" className="hidden lg:flex text-muted-foreground text-xs">
-            <Shield className="h-3 w-3 mr-1" />
-            Anonymity Protected
-          </Button>
+          {!loading && (
+            user ? (
+              <Link to="/profile">
+                <Button variant="ghost" size="sm" className="flex items-center gap-1.5">
+                  <User className="h-4 w-4" />
+                  <span className="hidden sm:inline">Profile</span>
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/auth">
+                <Button variant="ghost" size="sm" className="flex items-center gap-1.5">
+                  <LogIn className="h-4 w-4" />
+                  <span className="hidden sm:inline">Sign In</span>
+                </Button>
+              </Link>
+            )
+          )}
           
           <Sheet>
             <SheetTrigger asChild className="md:hidden">
@@ -82,6 +97,34 @@ export function Header() {
                     </Link>
                   );
                 })}
+                
+                {!loading && (
+                  user ? (
+                    <Link
+                      to="/profile"
+                      className={`px-3 py-2 rounded-md transition-colors flex items-center gap-2 ${
+                        location.pathname === '/profile'
+                          ? 'bg-primary/10 text-primary font-medium' 
+                          : 'text-foreground hover:text-primary hover:bg-muted/50'
+                      }`}
+                    >
+                      <User className="h-4 w-4" />
+                      Profile
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/auth"
+                      className={`px-3 py-2 rounded-md transition-colors flex items-center gap-2 ${
+                        location.pathname === '/auth'
+                          ? 'bg-primary/10 text-primary font-medium' 
+                          : 'text-foreground hover:text-primary hover:bg-muted/50'
+                      }`}
+                    >
+                      <LogIn className="h-4 w-4" />
+                      Sign In
+                    </Link>
+                  )
+                )}
               </nav>
             </SheetContent>
           </Sheet>
