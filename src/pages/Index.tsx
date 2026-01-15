@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react';
 import { Header } from '@/components/Header';
-import { HeroSection } from '@/components/HeroSection';
 import { FilterButton } from '@/components/FilterButton';
 import { EnhancedPostCard } from '@/components/EnhancedPostCard';
 import { GuidedReportDialog } from '@/components/GuidedReportDialog';
@@ -60,7 +59,6 @@ export default function Index() {
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
       <LegalDisclaimer variant="banner" />
-      <HeroSection />
 
       <main className="flex-1 container py-8">
         {/* Header with actions */}
