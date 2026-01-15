@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Shield, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Shield, Eye, EyeOff, AlertCircle, Lock, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
 
@@ -95,17 +95,53 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-md border-border/50 bg-card/50 backdrop-blur">
-        <CardHeader className="text-center space-y-4">
-          <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-            <Shield className="h-6 w-6 text-primary" />
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute top-0 left-1/4 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/3 rounded-full blur-3xl" />
+      
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 relative z-10">
+        {/* Hero Section */}
+        <div className="max-w-lg mx-auto text-center mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
+            <Shield className="h-4 w-4 text-primary" />
+            <span className="text-sm text-primary font-medium">Your Identity is Protected</span>
           </div>
-          <CardTitle className="text-2xl">CivicVoice</CardTitle>
-          <CardDescription>
-            Create or access your anonymous civic identity
-          </CardDescription>
-        </CardHeader>
+          
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
+            Report Civic Issues
+            <span className="block text-primary">Anonymously</span>
+          </h1>
+          
+          <p className="text-muted-foreground text-base md:text-lg mb-6 max-w-md mx-auto">
+            A secure platform to expose fraud, corruption, and governance failures 
+            without revealing your identity. Your voice matters—your privacy is sacred.
+          </p>
+
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <Lock className="h-4 w-4 text-primary" />
+              <span>No Personal Data</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Eye className="h-4 w-4 text-primary" />
+              <span>IP Protected</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Users className="h-4 w-4 text-primary" />
+              <span>Community Verified</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Auth Card */}
+        <Card className="w-full max-w-md border-border/50 bg-card/50 backdrop-blur">
+          <CardHeader className="text-center space-y-2 pb-4">
+            <CardTitle className="text-xl">Get Started</CardTitle>
+            <CardDescription>
+              Create or access your anonymous civic identity
+            </CardDescription>
+          </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
@@ -220,6 +256,7 @@ export default function Auth() {
           </Tabs>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }
