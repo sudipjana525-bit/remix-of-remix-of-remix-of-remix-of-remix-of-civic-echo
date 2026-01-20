@@ -10,6 +10,7 @@ import Heatmap from "./pages/Heatmap";
 import InboxPage from "./pages/InboxPage";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
+import CommentsPage from "./pages/CommentsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
               <Route path="/inbox" element={<InboxPage />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/comments/:postId" element={<CommentsPage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
