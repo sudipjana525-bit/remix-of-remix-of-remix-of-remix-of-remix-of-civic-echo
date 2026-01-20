@@ -160,15 +160,15 @@ export default function CommentsPage() {
               </div>
             )}
             
-            <div className="p-4">
-              {/* Status badges */}
-              <div className="flex flex-wrap items-center gap-2 mb-3">
+            <div className="p-4 space-y-3">
+              {/* Row 1: Status badges */}
+              <div className="flex flex-wrap items-center gap-2">
                 <IncidentStatusBadge status={post.status || 'submitted'} size="sm" />
                 <EvidenceConfidenceScore level={post.confidenceScore || 'medium'} size="sm" />
               </div>
 
-              {/* Category and severity */}
-              <div className="flex flex-wrap items-center gap-2 mb-3">
+              {/* Row 2: Category and severity */}
+              <div className="flex flex-wrap items-center gap-2">
                 <CategoryBadge category={post.category} size="sm" />
                 <SeverityBadge severity={post.severity} size="sm" />
                 {EvidenceIcon && (
@@ -179,12 +179,16 @@ export default function CommentsPage() {
                 )}
               </div>
 
-              {/* Anonymous ID and metadata */}
-              <div className="flex items-center flex-wrap gap-3 text-xs text-muted-foreground mb-3">
-                <span className="anonymous-id font-medium">{post.anonymousId}</span>
+              {/* Row 3: Anonymous ID and credibility badge */}
+              <div className="flex items-center gap-2">
+                <span className="anonymous-id text-xs font-medium">{post.anonymousId}</span>
                 {post.credibilityBadge && (
                   <CredibilityBadge badge={post.credibilityBadge} />
                 )}
+              </div>
+
+              {/* Row 4: Time and location */}
+              <div className="flex items-center gap-4 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <Clock className="h-3 w-3" />
                   {formatDistanceToNow(post.createdAt, { addSuffix: true })}
@@ -198,23 +202,21 @@ export default function CommentsPage() {
               </div>
 
               {/* Content */}
-              <p className="text-foreground/90 text-sm leading-relaxed mb-3">
+              <p className="text-foreground/90 text-sm leading-relaxed">
                 {post.content}
               </p>
 
               {/* Legal disclaimer */}
-              <div className="mb-3">
-                <LegalDisclaimer variant="compact" />
-              </div>
+              <LegalDisclaimer variant="compact" />
 
               {/* Actions */}
               <div className="flex items-center justify-between pt-3 border-t border-border/50">
-                <div className="flex items-center">
+                <div className="flex items-center gap-1">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => handleVote('credible')}
-                    className={`px-2 ${userVote === 'credible' ? 'credibility-positive' : 'text-muted-foreground hover:text-credible'}`}
+                    className={`px-2 h-8 ${userVote === 'credible' ? 'credibility-positive' : 'text-muted-foreground hover:text-credible'}`}
                   >
                     <ThumbsUp className="h-4 w-4" />
                     <span className="text-xs ml-1">{credibleVotes}</span>
@@ -223,18 +225,18 @@ export default function CommentsPage() {
                     variant="ghost"
                     size="sm"
                     onClick={() => handleVote('suspicious')}
-                    className={`px-2 ${userVote === 'suspicious' ? 'credibility-negative' : 'text-muted-foreground hover:text-suspicious'}`}
+                    className={`px-2 h-8 ${userVote === 'suspicious' ? 'credibility-negative' : 'text-muted-foreground hover:text-suspicious'}`}
                   >
                     <ThumbsDown className="h-4 w-4" />
                     <span className="text-xs ml-1">{suspiciousVotes}</span>
                   </Button>
                 </div>
 
-                <div className="flex items-center">
-                  <Button variant="ghost" size="sm" className="px-2 text-muted-foreground hover:text-foreground">
+                <div className="flex items-center gap-1">
+                  <Button variant="ghost" size="sm" className="px-2 h-8 text-muted-foreground hover:text-foreground">
                     <Share2 className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="sm" className="px-2 text-muted-foreground hover:text-destructive">
+                  <Button variant="ghost" size="sm" className="px-2 h-8 text-muted-foreground hover:text-destructive">
                     <Flag className="h-4 w-4" />
                   </Button>
                 </div>
