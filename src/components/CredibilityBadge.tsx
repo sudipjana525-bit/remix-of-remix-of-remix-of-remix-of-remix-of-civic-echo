@@ -6,7 +6,7 @@ interface CredibilityBadgeProps {
   badge: CredibilityBadgeInfo;
 }
 
-const badgeConfig: Record<CredibilityBadgeInfo['level'], {
+const badgeConfig: Record<string, {
   icon: React.ElementType;
   label: string;
   description: string;
@@ -18,6 +18,12 @@ const badgeConfig: Record<CredibilityBadgeInfo['level'], {
     label: 'New Reporter',
     description: 'New anonymous contributor to the platform',
     className: 'text-muted-foreground bg-muted/50 border-border',
+  },
+  established: {
+    icon: Shield,
+    label: 'Established Reporter',
+    description: 'Regular contributor with verified track record',
+    className: 'text-severity-medium bg-severity-medium/10 border-severity-medium/30',
   },
   trusted: {
     icon: Shield,
