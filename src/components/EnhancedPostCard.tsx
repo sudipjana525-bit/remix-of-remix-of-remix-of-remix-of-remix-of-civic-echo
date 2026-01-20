@@ -185,40 +185,39 @@ export function EnhancedPostCard({ post }: EnhancedPostCardProps) {
           )}
 
           {/* Actions */}
-          <div className="flex items-center justify-between gap-2 pt-3 border-t border-border/50">
-            <div className="flex items-center gap-1">
+          <div className="flex items-center justify-between pt-3 border-t border-border/50">
+            <div className="flex items-center">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => handleVote('credible')}
-                className={userVote === 'credible' ? 'credibility-positive' : 'text-muted-foreground hover:text-credible'}
+                className={`px-2 sm:px-3 ${userVote === 'credible' ? 'credibility-positive' : 'text-muted-foreground hover:text-credible'}`}
               >
-                <ThumbsUp className="h-4 w-4 sm:mr-1" />
-                <span className="text-xs hidden sm:inline">Credible ({credibleVotes})</span>
-                <span className="text-xs sm:hidden">{credibleVotes}</span>
+                <ThumbsUp className="h-4 w-4" />
+                <span className="text-xs ml-1 hidden sm:inline">Credible ({credibleVotes})</span>
+                <span className="text-xs ml-1 sm:hidden">{credibleVotes}</span>
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => handleVote('suspicious')}
-                className={userVote === 'suspicious' ? 'credibility-negative' : 'text-muted-foreground hover:text-suspicious'}
+                className={`px-2 sm:px-3 ${userVote === 'suspicious' ? 'credibility-negative' : 'text-muted-foreground hover:text-suspicious'}`}
               >
-                <ThumbsDown className="h-4 w-4 sm:mr-1" />
-                <span className="text-xs hidden sm:inline">Suspicious ({suspiciousVotes})</span>
-                <span className="text-xs sm:hidden">{suspiciousVotes}</span>
+                <ThumbsDown className="h-4 w-4" />
+                <span className="text-xs ml-1 hidden sm:inline">Suspicious ({suspiciousVotes})</span>
+                <span className="text-xs ml-1 sm:hidden">{suspiciousVotes}</span>
               </Button>
             </div>
 
-            <div className="flex items-center gap-1">
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-                <MessageCircle className="h-4 w-4 sm:mr-1" />
-                <span className="text-xs hidden sm:inline">{post.commentCount}</span>
-                <span className="text-xs sm:hidden">{post.commentCount}</span>
+            <div className="flex items-center">
+              <Button variant="ghost" size="sm" className="px-2 sm:px-3 text-muted-foreground hover:text-foreground">
+                <MessageCircle className="h-4 w-4" />
+                <span className="text-xs ml-1">{post.commentCount}</span>
               </Button>
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+              <Button variant="ghost" size="sm" className="px-2 sm:px-3 text-muted-foreground hover:text-foreground">
                 <Share2 className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive">
+              <Button variant="ghost" size="sm" className="px-2 sm:px-3 text-muted-foreground hover:text-destructive">
                 <Flag className="h-4 w-4" />
               </Button>
             </div>
