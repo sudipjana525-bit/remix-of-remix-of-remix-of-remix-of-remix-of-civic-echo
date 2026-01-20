@@ -1,7 +1,6 @@
-import { Shield, Eye, Menu, Map, Inbox, User, LogIn } from 'lucide-react';
+import { Shield, Eye, Map, Inbox, User, LogIn } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { SmartAlerts } from './SmartAlerts';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -56,78 +55,22 @@ export function Header() {
           {!loading && (
             user ? (
               <Link to="/profile">
-                <Button variant="ghost" size="sm" className="flex items-center gap-1.5">
-                  <User className="h-4 w-4" />
-                  <span className="hidden sm:inline">Profile</span>
+                <Button variant="ghost" size="icon" className="flex items-center justify-center">
+                  <User className="h-5 w-5" />
                 </Button>
               </Link>
             ) : (
               <Link to="/auth">
-                <Button variant="ghost" size="sm" className="flex items-center gap-1.5">
+                <Button variant="ghost" size="icon" className="md:hidden flex items-center justify-center">
+                  <User className="h-5 w-5" />
+                </Button>
+                <Button variant="ghost" size="sm" className="hidden md:flex items-center gap-1.5">
                   <LogIn className="h-4 w-4" />
-                  <span className="hidden sm:inline">Sign In</span>
+                  <span>Sign In</span>
                 </Button>
               </Link>
             )
           )}
-          
-          <Sheet>
-            <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-72 bg-card border-border">
-              <nav className="flex flex-col gap-2 mt-8">
-                {navItems.map((item) => {
-                  const isActive = location.pathname === item.href;
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.href}
-                      to={item.href}
-                      className={`px-3 py-2 rounded-md transition-colors flex items-center gap-2 ${
-                        isActive 
-                          ? 'bg-primary/10 text-primary font-medium' 
-                          : 'text-foreground hover:text-primary hover:bg-muted/50'
-                      }`}
-                    >
-                      {Icon && <Icon className="h-4 w-4" />}
-                      {item.label}
-                    </Link>
-                  );
-                })}
-                
-                {!loading && (
-                  user ? (
-                    <Link
-                      to="/profile"
-                      className={`px-3 py-2 rounded-md transition-colors flex items-center gap-2 ${
-                        location.pathname === '/profile'
-                          ? 'bg-primary/10 text-primary font-medium' 
-                          : 'text-foreground hover:text-primary hover:bg-muted/50'
-                      }`}
-                    >
-                      <User className="h-4 w-4" />
-                      Profile
-                    </Link>
-                  ) : (
-                    <Link
-                      to="/auth"
-                      className={`px-3 py-2 rounded-md transition-colors flex items-center gap-2 ${
-                        location.pathname === '/auth'
-                          ? 'bg-primary/10 text-primary font-medium' 
-                          : 'text-foreground hover:text-primary hover:bg-muted/50'
-                      }`}
-                    >
-                      <LogIn className="h-4 w-4" />
-                      Sign In
-                    </Link>
-                  )
-                )}
-              </nav>
-            </SheetContent>
-          </Sheet>
         </div>
       </div>
     </header>
