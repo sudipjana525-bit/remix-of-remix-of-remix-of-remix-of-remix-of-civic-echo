@@ -113,8 +113,8 @@ export function PostCard({ post }: PostCardProps) {
           </p>
 
           {/* Actions */}
-          <div className="flex items-center justify-between pt-3 border-t border-border/50">
-            <div className="flex items-center gap-1">
+          <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-border/50">
+            <div className="flex items-center gap-1 flex-wrap">
               <Button
                 variant="ghost"
                 size="sm"
