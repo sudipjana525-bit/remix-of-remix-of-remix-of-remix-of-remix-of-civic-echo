@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { 
   Clock, 
   MapPin, 
@@ -56,6 +56,12 @@ export function EnhancedPostCard({ post }: EnhancedPostCardProps) {
   const [userVote, setUserVote] = useState<'credible' | 'suspicious' | null>(null);
   const [showRelated, setShowRelated] = useState(false);
 
+  // Memoize random values to prevent fluctuation on re-renders
+  const relatedIncidentCount = useMemo(() => 
+    post.relatedIncidentCount ?? Math.floor(Math.random() * 5), 
+    [post.relatedIncidentCount]
+  );
+
   const handleVote = (type: 'credible' | 'suspicious') => {
     if (userVote === type) {
       if (type === 'credible') {
@@ -87,7 +93,6 @@ export function EnhancedPostCard({ post }: EnhancedPostCardProps) {
   const confidenceScore = post.confidenceScore || 'medium';
   const visibilityTags = post.visibilityTags || [];
   const credibilityBadge = post.credibilityBadge || { level: 'new', reportsCount: 1, credibilityScore: 75 };
-  const relatedIncidentCount = post.relatedIncidentCount || Math.floor(Math.random() * 5);
 
   return (
     <Card className="glass-card overflow-hidden animate-fade-in hover:border-border transition-colors">
