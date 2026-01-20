@@ -87,6 +87,30 @@ export type Database = {
           },
         ]
       }
+      comments: {
+        Row: {
+          anonymous_id: string
+          content: string
+          created_at: string
+          id: string
+          post_id: string
+        }
+        Insert: {
+          anonymous_id?: string
+          content: string
+          created_at?: string
+          id?: string
+          post_id: string
+        }
+        Update: {
+          anonymous_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+        }
+        Relationships: []
+      }
       followed_topics: {
         Row: {
           created_at: string
