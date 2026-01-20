@@ -113,16 +113,16 @@ export function PostCard({ post }: PostCardProps) {
           </p>
 
           {/* Actions */}
-          <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-border/50">
-            <div className="flex items-center gap-1 flex-wrap">
+          <div className="flex items-center justify-between gap-2 pt-3 border-t border-border/50">
+            <div className="flex items-center gap-1">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => handleVote('credible')}
                 className={userVote === 'credible' ? 'credibility-positive' : 'text-muted-foreground hover:text-credible'}
               >
-                <ThumbsUp className="h-4 w-4 mr-1" />
-                <span className="text-xs">{credibleVotes}</span>
+                <ThumbsUp className="h-4 w-4 sm:mr-1" />
+                <span className="text-xs hidden sm:inline">{credibleVotes}</span>
               </Button>
               <Button
                 variant="ghost"
@@ -130,15 +130,15 @@ export function PostCard({ post }: PostCardProps) {
                 onClick={() => handleVote('suspicious')}
                 className={userVote === 'suspicious' ? 'credibility-negative' : 'text-muted-foreground hover:text-suspicious'}
               >
-                <ThumbsDown className="h-4 w-4 mr-1" />
-                <span className="text-xs">{suspiciousVotes}</span>
+                <ThumbsDown className="h-4 w-4 sm:mr-1" />
+                <span className="text-xs hidden sm:inline">{suspiciousVotes}</span>
               </Button>
             </div>
 
             <div className="flex items-center gap-1">
               <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-                <MessageCircle className="h-4 w-4 mr-1" />
-                <span className="text-xs">{post.commentCount}</span>
+                <MessageCircle className="h-4 w-4 sm:mr-1" />
+                <span className="text-xs hidden sm:inline">{post.commentCount}</span>
               </Button>
               <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
                 <Share2 className="h-4 w-4" />
