@@ -62,6 +62,22 @@ export function EnhancedPostCard({ post }: EnhancedPostCardProps) {
     [post.relatedIncidentCount]
   );
 
+  // Generate mock incidents based on count
+  const mockIncidents = useMemo(() => {
+    if (post.relatedIncidents) return post.relatedIncidents;
+    const incidents = [];
+    for (let i = 0; i < relatedIncidentCount; i++) {
+      incidents.push({
+        id: String(i + 1),
+        anonymousId: `Anon_${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+        location: post.location,
+        category: post.category,
+        createdAt: new Date(Date.now() - (i + 1) * 3600000)
+      });
+    }
+    return incidents;
+  }, [relatedIncidentCount, post.relatedIncidents, post.location, post.category]);
+
   const handleVote = (type: 'credible' | 'suspicious') => {
     if (userVote === type) {
       if (type === 'credible') {
@@ -179,10 +195,7 @@ export function EnhancedPostCard({ post }: EnhancedPostCardProps) {
                 <div className="mt-2">
                   <RelatedIncidents 
                     count={relatedIncidentCount}
-                    incidents={post.relatedIncidents || [
-                      { id: '1', anonymousId: 'Anon_R3T5K2', location: post.location, category: post.category, createdAt: new Date(Date.now() - 3600000) },
-                      { id: '2', anonymousId: 'Anon_M7N2P4', location: post.location, category: post.category, createdAt: new Date(Date.now() - 7200000) },
-                    ]}
+                    incidents={mockIncidents}
                   />
                 </div>
               )}
