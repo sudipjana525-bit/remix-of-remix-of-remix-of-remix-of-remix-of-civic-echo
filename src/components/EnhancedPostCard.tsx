@@ -25,6 +25,7 @@ import { VisibilityTags } from './VisibilityTags';
 import { CredibilityBadge } from './CredibilityBadge';
 import { LegalDisclaimer } from './LegalDisclaimer';
 import { RelatedIncidents } from './RelatedIncidents';
+import { CommentsSection } from './CommentsSection';
 import type { Post, EvidenceType } from '@/lib/anonymity';
 import type { IncidentStatus, ConfidenceLevel, VisibilityTag, CredibilityBadgeInfo, RelatedIncident } from '@/lib/types';
 import { formatDistanceToNow } from 'date-fns';
@@ -55,6 +56,7 @@ export function EnhancedPostCard({ post }: EnhancedPostCardProps) {
   const [suspiciousVotes, setSuspiciousVotes] = useState(post.suspiciousVotes);
   const [userVote, setUserVote] = useState<'credible' | 'suspicious' | null>(null);
   const [showRelated, setShowRelated] = useState(false);
+  const [showComments, setShowComments] = useState(false);
 
   // Memoize random values to prevent fluctuation on re-renders
   const relatedIncidentCount = useMemo(() => 
@@ -228,7 +230,12 @@ export function EnhancedPostCard({ post }: EnhancedPostCardProps) {
             </div>
 
             <div className="flex items-center">
-              <Button variant="ghost" size="sm" className="px-2 sm:px-3 text-muted-foreground hover:text-foreground">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className={`px-2 sm:px-3 ${showComments ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+                onClick={() => setShowComments(!showComments)}
+              >
                 <MessageCircle className="h-4 w-4" />
                 <span className="text-xs ml-1">{post.commentCount}</span>
               </Button>
@@ -240,6 +247,13 @@ export function EnhancedPostCard({ post }: EnhancedPostCardProps) {
               </Button>
             </div>
           </div>
+
+          {/* Comments section */}
+          {showComments && (
+            <div className="mt-4 pt-4 border-t border-border/50">
+              <CommentsSection postId={post.id} initialCount={post.commentCount} />
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
