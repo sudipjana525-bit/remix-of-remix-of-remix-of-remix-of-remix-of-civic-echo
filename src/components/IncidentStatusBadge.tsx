@@ -60,7 +60,7 @@ const statusConfig: Record<IncidentStatus, {
 };
 
 export function IncidentStatusBadge({ status, size = 'sm', showLabel = true }: IncidentStatusBadgeProps) {
-  const config = statusConfig[status];
+  const config = statusConfig[status] || statusConfig.submitted;
   const Icon = config.icon;
 
   const sizeClasses = size === 'sm' 
