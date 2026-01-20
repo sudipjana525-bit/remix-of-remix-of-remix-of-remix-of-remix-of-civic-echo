@@ -35,7 +35,7 @@ export function RelatedIncidents({ count, incidents = [], onViewAll }: RelatedIn
       </div>
 
       {incidents.length > 0 && (
-        <div className="space-y-1.5 max-h-[88px] overflow-y-auto">
+        <div className="space-y-1.5 max-h-[88px] overflow-y-auto scrollbar-hide">
           {incidents.map((incident) => (
             <div 
               key={incident.id}
