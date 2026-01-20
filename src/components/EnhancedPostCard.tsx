@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Clock, 
   MapPin, 
@@ -26,6 +27,7 @@ import { CredibilityBadge } from './CredibilityBadge';
 import { LegalDisclaimer } from './LegalDisclaimer';
 import { RelatedIncidents } from './RelatedIncidents';
 import { CommentsSection } from './CommentsSection';
+import { useIsMobile } from '@/hooks/use-mobile';
 import type { Post, EvidenceType } from '@/lib/anonymity';
 import type { IncidentStatus, ConfidenceLevel, VisibilityTag, CredibilityBadgeInfo, RelatedIncident } from '@/lib/types';
 import { formatDistanceToNow } from 'date-fns';
@@ -52,11 +54,21 @@ interface EnhancedPostCardProps {
 }
 
 export function EnhancedPostCard({ post }: EnhancedPostCardProps) {
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [credibleVotes, setCredibleVotes] = useState(post.credibleVotes);
   const [suspiciousVotes, setSuspiciousVotes] = useState(post.suspiciousVotes);
   const [userVote, setUserVote] = useState<'credible' | 'suspicious' | null>(null);
   const [showRelated, setShowRelated] = useState(false);
   const [showComments, setShowComments] = useState(false);
+
+  const handleCommentsClick = () => {
+    if (isMobile) {
+      navigate(`/comments/${post.id}`);
+    } else {
+      setShowComments(!showComments);
+    }
+  };
 
   // Memoize random values to prevent fluctuation on re-renders
   const relatedIncidentCount = useMemo(() => 
@@ -234,7 +246,7 @@ export function EnhancedPostCard({ post }: EnhancedPostCardProps) {
                 variant="ghost" 
                 size="sm" 
                 className={`px-2 sm:px-3 ${showComments ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
-                onClick={() => setShowComments(!showComments)}
+                onClick={handleCommentsClick}
               >
                 <MessageCircle className="h-4 w-4" />
                 <span className="text-xs ml-1">{post.commentCount}</span>
@@ -248,8 +260,8 @@ export function EnhancedPostCard({ post }: EnhancedPostCardProps) {
             </div>
           </div>
 
-          {/* Comments section */}
-          {showComments && (
+          {/* Comments section - desktop only */}
+          {showComments && !isMobile && (
             <div className="mt-4 pt-4 border-t border-border/50">
               <CommentsSection postId={post.id} initialCount={post.commentCount} />
             </div>

@@ -17,9 +17,10 @@ interface Comment {
 interface CommentsSectionProps {
   postId: string;
   initialCount: number;
+  isFullPage?: boolean;
 }
 
-export function CommentsSection({ postId, initialCount }: CommentsSectionProps) {
+export function CommentsSection({ postId, initialCount, isFullPage = false }: CommentsSectionProps) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -109,7 +110,7 @@ export function CommentsSection({ postId, initialCount }: CommentsSectionProps) 
       </form>
 
       {/* Comments list */}
-      <div className="max-h-[200px] overflow-y-auto scrollbar-hide space-y-3">
+      <div className={`${isFullPage ? 'max-h-none' : 'max-h-[200px]'} overflow-y-auto scrollbar-hide space-y-3`}>
         {isLoading ? (
           <div className="text-center text-muted-foreground text-sm py-4">
             Loading comments...
