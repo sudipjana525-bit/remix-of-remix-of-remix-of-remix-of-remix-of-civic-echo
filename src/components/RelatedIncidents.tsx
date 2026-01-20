@@ -35,8 +35,8 @@ export function RelatedIncidents({ count, incidents = [], onViewAll }: RelatedIn
       </div>
 
       {incidents.length > 0 && (
-        <div className="space-y-1.5">
-          {incidents.slice(0, 3).map((incident) => (
+        <div className="space-y-1.5 max-h-[88px] overflow-y-auto">
+          {incidents.map((incident) => (
             <div 
               key={incident.id}
               className="flex items-center justify-between text-xs text-muted-foreground p-2 rounded bg-muted/30 hover:bg-muted/50 cursor-pointer transition-colors"
