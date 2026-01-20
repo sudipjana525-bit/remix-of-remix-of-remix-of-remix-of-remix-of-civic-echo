@@ -34,7 +34,7 @@ const confidenceConfig: Record<ConfidenceLevel, {
 };
 
 export function EvidenceConfidenceScore({ level, size = 'sm' }: EvidenceConfidenceScoreProps) {
-  const config = confidenceConfig[level];
+  const config = confidenceConfig[level] || confidenceConfig.medium;
   const Icon = config.icon;
 
   const sizeClasses = size === 'sm' 
