@@ -6,20 +6,24 @@ import { GuidedReportDialog } from '@/components/GuidedReportDialog';
 import { Footer } from '@/components/Footer';
 import { LegalDisclaimer } from '@/components/LegalDisclaimer';
 import { TopicFollowing } from '@/components/TopicFollowing';
+import { CommentsSidePanel } from '@/components/CommentsSidePanel';
 import { generateMockPosts } from '@/lib/anonymity';
 import type { Post, Category, Severity } from '@/lib/anonymity';
 import type { FollowedTopic } from '@/lib/types';
 import { TrendingUp, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 type SortOption = 'recent' | 'trending';
 
 export default function Index() {
+  const isMobile = useIsMobile();
   const [posts, setPosts] = useState<Post[]>(generateMockPosts());
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedSeverity, setSelectedSeverity] = useState<Severity | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('recent');
   const [followedTopics, setFollowedTopics] = useState<FollowedTopic[]>([]);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const filteredPosts = useMemo(() => {
     let result = [...posts];
@@ -55,12 +59,24 @@ export default function Index() {
     setFollowedTopics(prev => prev.filter(t => !(t.type === topic.type && t.value === topic.value)));
   };
 
+  const handleCommentsClick = (post: Post) => {
+    if (selectedPost?.id === post.id) {
+      setSelectedPost(null);
+    } else {
+      setSelectedPost(post);
+    }
+  };
+
+  const handleCloseComments = () => {
+    setSelectedPost(null);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
       <LegalDisclaimer variant="banner" />
 
-      <main className="flex-1 container py-8">
+      <main className={`flex-1 container py-8 ${selectedPost && !isMobile ? 'pr-[420px]' : ''}`}>
         {/* Header with actions */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-2 flex-wrap">
@@ -102,7 +118,12 @@ export default function Index() {
         <div className="max-w-2xl mx-auto space-y-4">
           {filteredPosts.length > 0 ? (
             filteredPosts.map((post) => (
-              <EnhancedPostCard key={post.id} post={post} />
+              <EnhancedPostCard 
+                key={post.id} 
+                post={post} 
+                onCommentsClick={handleCommentsClick}
+                isCommentsOpen={selectedPost?.id === post.id}
+              />
             ))
           ) : (
             <div className="text-center py-12 glass-card">
@@ -113,6 +134,11 @@ export default function Index() {
           )}
         </div>
       </main>
+
+      {/* Comments side panel - desktop only */}
+      {!isMobile && (
+        <CommentsSidePanel post={selectedPost} onClose={handleCloseComments} />
+      )}
 
       <Footer />
     </div>

@@ -26,7 +26,7 @@ import { VisibilityTags } from './VisibilityTags';
 import { CredibilityBadge } from './CredibilityBadge';
 import { LegalDisclaimer } from './LegalDisclaimer';
 import { RelatedIncidents } from './RelatedIncidents';
-import { CommentsSection } from './CommentsSection';
+
 import { useIsMobile } from '@/hooks/use-mobile';
 import type { Post, EvidenceType } from '@/lib/anonymity';
 import type { IncidentStatus, ConfidenceLevel, VisibilityTag, CredibilityBadgeInfo, RelatedIncident } from '@/lib/types';
@@ -51,22 +51,23 @@ interface ExtendedPostData extends Post {
 
 interface EnhancedPostCardProps {
   post: ExtendedPostData;
+  onCommentsClick?: (post: ExtendedPostData) => void;
+  isCommentsOpen?: boolean;
 }
 
-export function EnhancedPostCard({ post }: EnhancedPostCardProps) {
+export function EnhancedPostCard({ post, onCommentsClick, isCommentsOpen }: EnhancedPostCardProps) {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [credibleVotes, setCredibleVotes] = useState(post.credibleVotes);
   const [suspiciousVotes, setSuspiciousVotes] = useState(post.suspiciousVotes);
   const [userVote, setUserVote] = useState<'credible' | 'suspicious' | null>(null);
   const [showRelated, setShowRelated] = useState(false);
-  const [showComments, setShowComments] = useState(false);
 
   const handleCommentsClick = () => {
     if (isMobile) {
       navigate(`/comments/${post.id}`);
-    } else {
-      setShowComments(!showComments);
+    } else if (onCommentsClick) {
+      onCommentsClick(post);
     }
   };
 
@@ -245,7 +246,7 @@ export function EnhancedPostCard({ post }: EnhancedPostCardProps) {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className={`px-2 sm:px-3 ${showComments ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`px-2 sm:px-3 ${isCommentsOpen ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-foreground'}`}
                 onClick={handleCommentsClick}
               >
                 <MessageCircle className="h-4 w-4" />
@@ -259,13 +260,6 @@ export function EnhancedPostCard({ post }: EnhancedPostCardProps) {
               </Button>
             </div>
           </div>
-
-          {/* Comments section - desktop only */}
-          {showComments && !isMobile && (
-            <div className="mt-4 pt-4 border-t border-border/50">
-              <CommentsSection postId={post.id} initialCount={post.commentCount} />
-            </div>
-          )}
         </div>
       </CardContent>
     </Card>
