@@ -6,7 +6,7 @@ import { GuidedReportDialog } from '@/components/GuidedReportDialog';
 import { Footer } from '@/components/Footer';
 import { LegalDisclaimer } from '@/components/LegalDisclaimer';
 import { TopicFollowing } from '@/components/TopicFollowing';
-import { CommentsSidePanel } from '@/components/CommentsSidePanel';
+import { CommentsCard } from '@/components/CommentsCard';
 import { generateMockPosts } from '@/lib/anonymity';
 import type { Post, Category, Severity } from '@/lib/anonymity';
 import type { FollowedTopic } from '@/lib/types';
@@ -23,7 +23,7 @@ export default function Index() {
   const [selectedSeverity, setSelectedSeverity] = useState<Severity | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('recent');
   const [followedTopics, setFollowedTopics] = useState<FollowedTopic[]>([]);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
 
   const filteredPosts = useMemo(() => {
     let result = [...posts];
@@ -60,15 +60,15 @@ export default function Index() {
   };
 
   const handleCommentsClick = (post: Post) => {
-    if (selectedPost?.id === post.id) {
-      setSelectedPost(null);
+    if (selectedPostId === post.id) {
+      setSelectedPostId(null);
     } else {
-      setSelectedPost(post);
+      setSelectedPostId(post.id);
     }
   };
 
   const handleCloseComments = () => {
-    setSelectedPost(null);
+    setSelectedPostId(null);
   };
 
   return (
@@ -76,7 +76,7 @@ export default function Index() {
       <Header />
       <LegalDisclaimer variant="banner" />
 
-      <main className={`flex-1 container py-8 ${selectedPost && !isMobile ? 'pr-[420px]' : ''}`}>
+      <main className="flex-1 container py-8">
         {/* Header with actions */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-2 flex-wrap">
@@ -115,18 +115,33 @@ export default function Index() {
         </div>
 
         {/* Posts */}
-        <div className="max-w-2xl mx-auto space-y-4">
+        <div className="max-w-4xl mx-auto space-y-4">
           {filteredPosts.length > 0 ? (
-            filteredPosts.map((post) => (
-              <EnhancedPostCard 
-                key={post.id} 
-                post={post} 
-                onCommentsClick={handleCommentsClick}
-                isCommentsOpen={selectedPost?.id === post.id}
-              />
-            ))
+            filteredPosts.map((post) => {
+              const isCommentsOpen = selectedPostId === post.id && !isMobile;
+              
+              return (
+                <div 
+                  key={post.id} 
+                  className={`grid gap-4 ${isCommentsOpen ? 'grid-cols-2' : 'grid-cols-1 max-w-2xl mx-auto'}`}
+                >
+                  <EnhancedPostCard 
+                    post={post} 
+                    onCommentsClick={handleCommentsClick}
+                    isCommentsOpen={isCommentsOpen}
+                  />
+                  {isCommentsOpen && (
+                    <CommentsCard 
+                      postId={post.id} 
+                      commentCount={post.commentCount}
+                      onClose={handleCloseComments}
+                    />
+                  )}
+                </div>
+              );
+            })
           ) : (
-            <div className="text-center py-12 glass-card">
+            <div className="text-center py-12 glass-card max-w-2xl mx-auto">
               <p className="text-muted-foreground">
                 No reports match your filters. Try adjusting your criteria.
               </p>
@@ -134,11 +149,6 @@ export default function Index() {
           )}
         </div>
       </main>
-
-      {/* Comments side panel - desktop only */}
-      {!isMobile && (
-        <CommentsSidePanel post={selectedPost} onClose={handleCloseComments} />
-      )}
 
       <Footer />
     </div>
