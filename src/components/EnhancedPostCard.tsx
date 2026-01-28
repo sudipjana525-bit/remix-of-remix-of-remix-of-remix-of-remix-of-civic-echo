@@ -126,8 +126,8 @@ export function EnhancedPostCard({ post, onCommentsClick, isCommentsOpen }: Enha
   const credibilityBadge = post.credibilityBadge || { level: 'new', reportsCount: 1, credibilityScore: 75 };
 
   return (
-    <Card className="glass-card overflow-hidden animate-fade-in hover:border-border transition-colors">
-      <CardContent className="p-0">
+    <Card className="glass-card overflow-hidden animate-fade-in hover:border-border transition-colors h-full flex flex-col">
+      <CardContent className="p-0 flex-1 flex flex-col">
         {post.imageUrl && (
           <div className="relative h-48 overflow-hidden">
             <img 
