@@ -123,7 +123,7 @@ export default function Index() {
               return (
                 <div 
                   key={post.id} 
-                  className={`grid gap-4 items-start ${isCommentsOpen ? 'grid-cols-2' : 'grid-cols-1 max-w-2xl mx-auto'}`}
+                  className={`grid gap-4 items-stretch ${isCommentsOpen ? 'grid-cols-2' : 'grid-cols-1 max-w-2xl mx-auto'}`}
                 >
                   <EnhancedPostCard 
                     post={post} 
