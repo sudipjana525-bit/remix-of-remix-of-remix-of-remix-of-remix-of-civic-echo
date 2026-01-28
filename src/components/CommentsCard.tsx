@@ -7,11 +7,15 @@ interface CommentsCardProps {
   postId: string;
   commentCount: number;
   onClose: () => void;
+  height?: number;
 }
 
-export function CommentsCard({ postId, commentCount, onClose }: CommentsCardProps) {
+export function CommentsCard({ postId, commentCount, onClose, height }: CommentsCardProps) {
   return (
-    <Card className="glass-card overflow-hidden animate-fade-in h-full">
+    <Card 
+      className="glass-card overflow-hidden animate-fade-in"
+      style={{ height: height ? `${height}px` : 'auto' }}
+    >
       <CardContent className="p-0 h-full flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border/50 shrink-0">

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { FilterButton } from '@/components/FilterButton';
 import { EnhancedPostCard } from '@/components/EnhancedPostCard';
@@ -71,6 +71,48 @@ export default function Index() {
     setSelectedPostId(null);
   };
 
+  // Component to handle post + comments with height sync
+  function PostWithComments({ 
+    post, 
+    isCommentsOpen, 
+    onCommentsClick, 
+    onCloseComments 
+  }: { 
+    post: Post; 
+    isCommentsOpen: boolean; 
+    onCommentsClick: (post: Post) => void; 
+    onCloseComments: () => void;
+  }) {
+    const postRef = useRef<HTMLDivElement>(null);
+    const [postHeight, setPostHeight] = useState<number | undefined>(undefined);
+
+    useEffect(() => {
+      if (isCommentsOpen && postRef.current) {
+        setPostHeight(postRef.current.offsetHeight);
+      }
+    }, [isCommentsOpen]);
+
+    return (
+      <div className={`grid gap-4 ${isCommentsOpen ? 'grid-cols-2' : 'grid-cols-1 max-w-2xl mx-auto'}`}>
+        <div ref={postRef}>
+          <EnhancedPostCard 
+            post={post} 
+            onCommentsClick={onCommentsClick}
+            isCommentsOpen={isCommentsOpen}
+          />
+        </div>
+        {isCommentsOpen && (
+          <CommentsCard 
+            postId={post.id} 
+            commentCount={post.commentCount}
+            onClose={onCloseComments}
+            height={postHeight}
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
@@ -117,29 +159,15 @@ export default function Index() {
         {/* Posts */}
         <div className="max-w-4xl mx-auto space-y-4">
           {filteredPosts.length > 0 ? (
-            filteredPosts.map((post) => {
-              const isCommentsOpen = selectedPostId === post.id && !isMobile;
-              
-              return (
-                <div 
-                  key={post.id} 
-                  className={`grid gap-4 items-stretch ${isCommentsOpen ? 'grid-cols-2' : 'grid-cols-1 max-w-2xl mx-auto'}`}
-                >
-                  <EnhancedPostCard 
-                    post={post} 
-                    onCommentsClick={handleCommentsClick}
-                    isCommentsOpen={isCommentsOpen}
-                  />
-                  {isCommentsOpen && (
-                    <CommentsCard 
-                      postId={post.id} 
-                      commentCount={post.commentCount}
-                      onClose={handleCloseComments}
-                    />
-                  )}
-                </div>
-              );
-            })
+            filteredPosts.map((post) => (
+              <PostWithComments
+                key={post.id}
+                post={post}
+                isCommentsOpen={selectedPostId === post.id && !isMobile}
+                onCommentsClick={handleCommentsClick}
+                onCloseComments={handleCloseComments}
+              />
+            ))
           ) : (
             <div className="text-center py-12 glass-card max-w-2xl mx-auto">
               <p className="text-muted-foreground">
