@@ -11,7 +11,7 @@ interface CommentsCardProps {
 
 export function CommentsCard({ postId, commentCount, onClose }: CommentsCardProps) {
   return (
-    <Card className="glass-card overflow-hidden animate-fade-in max-h-[500px]">
+    <Card className="glass-card overflow-hidden animate-fade-in max-h-[380px]">
       <CardContent className="p-0 flex flex-col h-full">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border/50 shrink-0">
