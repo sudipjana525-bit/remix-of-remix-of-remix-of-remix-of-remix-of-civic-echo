@@ -11,8 +11,8 @@ interface CommentsCardProps {
 
 export function CommentsCard({ postId, commentCount, onClose }: CommentsCardProps) {
   return (
-    <Card className="glass-card overflow-hidden animate-fade-in max-h-[380px]">
-      <CardContent className="p-0 flex flex-col h-full">
+    <Card className="glass-card overflow-hidden animate-fade-in h-[380px]">
+      <CardContent className="p-0 h-full flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border/50 shrink-0">
           <h3 className="font-semibold text-foreground text-sm">
@@ -23,9 +23,9 @@ export function CommentsCard({ postId, commentCount, onClose }: CommentsCardProp
           </Button>
         </div>
 
-        {/* Comments content - fills remaining space, scrolls if needed */}
-        <div className="flex-1 overflow-y-auto p-4 min-h-0">
-          <CommentsSection postId={postId} initialCount={commentCount} isFullPage />
+        {/* Comments content - scrollable area */}
+        <div className="flex-1 overflow-y-auto p-4">
+          <CommentsSection postId={postId} initialCount={commentCount} />
         </div>
       </CardContent>
     </Card>
