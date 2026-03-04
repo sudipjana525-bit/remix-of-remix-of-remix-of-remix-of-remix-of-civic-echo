@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MapPin, Filter, Layers } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,10 +12,12 @@ import {
 } from '@/components/ui/select';
 import { CATEGORIES } from '@/lib/anonymity';
 import type { Category } from '@/lib/anonymity';
+import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 
 interface HeatmapData {
   location: string;
-  coordinates: { x: number; y: number };
+  coordinates: { lat: number; lng: number };
   incidentCount: number;
   categories: { category: Category; count: number }[];
   severity: 'low' | 'medium' | 'high';
@@ -23,8 +25,8 @@ interface HeatmapData {
 
 const mockHeatmapData: HeatmapData[] = [
   {
-    location: 'Metro District',
-    coordinates: { x: 35, y: 25 },
+    location: 'Metro District, Mumbai',
+    coordinates: { lat: 19.076, lng: 72.8777 },
     incidentCount: 23,
     categories: [
       { category: 'fraud', count: 12 },
@@ -34,8 +36,8 @@ const mockHeatmapData: HeatmapData[] = [
     severity: 'high',
   },
   {
-    location: 'Central Hospital Area',
-    coordinates: { x: 55, y: 40 },
+    location: 'Central Hospital Area, Delhi',
+    coordinates: { lat: 28.6139, lng: 77.209 },
     incidentCount: 15,
     categories: [
       { category: 'healthcare', count: 11 },
@@ -44,8 +46,8 @@ const mockHeatmapData: HeatmapData[] = [
     severity: 'high',
   },
   {
-    location: 'Riverside Colony',
-    coordinates: { x: 25, y: 60 },
+    location: 'Riverside Colony, Kolkata',
+    coordinates: { lat: 22.5726, lng: 88.3639 },
     incidentCount: 8,
     categories: [
       { category: 'infrastructure', count: 5 },
@@ -54,8 +56,8 @@ const mockHeatmapData: HeatmapData[] = [
     severity: 'medium',
   },
   {
-    location: 'Highway 47 Section',
-    coordinates: { x: 70, y: 30 },
+    location: 'Highway 47 Section, Bangalore',
+    coordinates: { lat: 12.9716, lng: 77.5946 },
     incidentCount: 12,
     categories: [
       { category: 'corruption', count: 7 },
@@ -64,8 +66,8 @@ const mockHeatmapData: HeatmapData[] = [
     severity: 'high',
   },
   {
-    location: 'North Industrial Zone',
-    coordinates: { x: 45, y: 70 },
+    location: 'North Industrial Zone, Chennai',
+    coordinates: { lat: 13.0827, lng: 80.2707 },
     incidentCount: 5,
     categories: [
       { category: 'safety', count: 3 },
@@ -74,8 +76,8 @@ const mockHeatmapData: HeatmapData[] = [
     severity: 'low',
   },
   {
-    location: 'Old Town Market',
-    coordinates: { x: 60, y: 55 },
+    location: 'Old Town Market, Hyderabad',
+    coordinates: { lat: 17.385, lng: 78.4867 },
     incidentCount: 9,
     categories: [
       { category: 'fraud', count: 6 },
@@ -85,16 +87,10 @@ const mockHeatmapData: HeatmapData[] = [
   },
 ];
 
-const severityColors = {
-  low: 'bg-severity-low/60',
-  medium: 'bg-severity-medium/60',
-  high: 'bg-severity-high/60',
-};
-
-const severityRingColors = {
-  low: 'ring-severity-low',
-  medium: 'ring-severity-medium',
-  high: 'ring-severity-high',
+const severityColorValues: Record<string, string> = {
+  low: '#22c55e',
+  medium: '#f59e0b',
+  high: '#ef4444',
 };
 
 interface CivicHeatmapProps {
@@ -105,14 +101,14 @@ export function CivicHeatmap({ className }: CivicHeatmapProps) {
   const [selectedCategory, setSelectedCategory] = useState<Category | 'all'>('all');
   const [selectedLocation, setSelectedLocation] = useState<HeatmapData | null>(null);
 
-  const filteredData = selectedCategory === 'all' 
-    ? mockHeatmapData 
+  const filteredData = selectedCategory === 'all'
+    ? mockHeatmapData
     : mockHeatmapData.filter(d => d.categories.some(c => c.category === selectedCategory));
 
-  const getMarkerSize = (count: number) => {
-    if (count >= 20) return 'w-12 h-12';
-    if (count >= 10) return 'w-10 h-10';
-    return 'w-8 h-8';
+  const getMarkerRadius = (count: number) => {
+    if (count >= 20) return 18;
+    if (count >= 10) return 14;
+    return 10;
   };
 
   return (
@@ -143,60 +139,65 @@ export function CivicHeatmap({ className }: CivicHeatmapProps) {
           </div>
         </CardHeader>
         <CardContent className="p-0">
-          {/* Map visualization */}
-          <div className="relative h-[400px] bg-muted/20 overflow-hidden">
-            {/* Grid overlay */}
-            <div className="absolute inset-0 opacity-10">
-              <svg width="100%" height="100%">
-                <defs>
-                  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.5" />
-                  </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#grid)" />
-              </svg>
+          {/* Map */}
+          <div className="relative h-[450px]">
+            <MapContainer
+              center={[20.5937, 78.9629]}
+              zoom={5}
+              className="h-full w-full z-0"
+              scrollWheelZoom={true}
+            >
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              {filteredData.map((data) => (
+                <CircleMarker
+                  key={data.location}
+                  center={[data.coordinates.lat, data.coordinates.lng]}
+                  radius={getMarkerRadius(data.incidentCount)}
+                  fillColor={severityColorValues[data.severity]}
+                  color={severityColorValues[data.severity]}
+                  weight={2}
+                  opacity={0.9}
+                  fillOpacity={0.5}
+                  eventHandlers={{
+                    click: () => setSelectedLocation(
+                      selectedLocation?.location === data.location ? null : data
+                    ),
+                  }}
+                >
+                  <Popup>
+                    <div className="text-sm">
+                      <strong>{data.location}</strong>
+                      <br />
+                      {data.incidentCount} incidents
+                    </div>
+                  </Popup>
+                </CircleMarker>
+              ))}
+            </MapContainer>
+
+            {/* Legend */}
+            <div className="absolute bottom-3 right-3 z-[1000] flex items-center gap-2 px-3 py-2 bg-card/90 backdrop-blur-sm rounded-lg shadow-md border border-border/50">
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 rounded-full" style={{ background: severityColorValues.low }} />
+                <span className="text-xs text-muted-foreground">Low</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 rounded-full" style={{ background: severityColorValues.medium }} />
+                <span className="text-xs text-muted-foreground">Medium</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 rounded-full" style={{ background: severityColorValues.high }} />
+                <span className="text-xs text-muted-foreground">High</span>
+              </div>
             </div>
 
-            {/* Location markers */}
-            {filteredData.map((data) => (
-              <button
-                key={data.location}
-                onClick={() => setSelectedLocation(selectedLocation?.location === data.location ? null : data)}
-                className={`absolute transform -translate-x-1/2 -translate-y-1/2 rounded-full 
-                  ${getMarkerSize(data.incidentCount)} 
-                  ${severityColors[data.severity]}
-                  ring-2 ${severityRingColors[data.severity]}
-                  flex items-center justify-center
-                  transition-all duration-200 hover:scale-110 cursor-pointer
-                  ${selectedLocation?.location === data.location ? 'scale-125 ring-4' : ''}
-                `}
-                style={{ left: `${data.coordinates.x}%`, top: `${data.coordinates.y}%` }}
-                title={data.location}
-              >
-                <span className="text-xs font-bold text-foreground">{data.incidentCount}</span>
-              </button>
-            ))}
-
             {/* Privacy notice */}
-            <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
-              <div className="flex items-center gap-2 px-2 py-1 bg-card/80 backdrop-blur-sm rounded text-xs text-muted-foreground">
-                <Layers className="h-3 w-3" />
-                <span>Approximate locations only</span>
-              </div>
-              <div className="flex items-center gap-2 px-2 py-1 bg-card/80 backdrop-blur-sm rounded">
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 rounded-full bg-severity-low" />
-                  <span className="text-xs text-muted-foreground">Low</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 rounded-full bg-severity-medium" />
-                  <span className="text-xs text-muted-foreground">Medium</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 rounded-full bg-severity-high" />
-                  <span className="text-xs text-muted-foreground">High</span>
-                </div>
-              </div>
+            <div className="absolute bottom-3 left-3 z-[1000] flex items-center gap-2 px-3 py-2 bg-card/90 backdrop-blur-sm rounded-lg shadow-md border border-border/50">
+              <Layers className="h-3 w-3 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">Approximate locations only</span>
             </div>
           </div>
 
@@ -213,8 +214,8 @@ export function CivicHeatmap({ className }: CivicHeatmapProps) {
                     {selectedLocation.incidentCount} incident{selectedLocation.incidentCount !== 1 ? 's' : ''} reported
                   </p>
                 </div>
-                <Badge 
-                  variant="outline" 
+                <Badge
+                  variant="outline"
                   className={`border-severity-${selectedLocation.severity} text-severity-${selectedLocation.severity}`}
                 >
                   {selectedLocation.severity} density
